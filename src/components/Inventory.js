@@ -59,6 +59,7 @@ export default class Inventory extends Component {
           placeholder="Fish Image"
           onChange={e => this.handleChange(e, id)}
         />
+        <button onClick={() => this.props.removeFish(id)}>Remove Fish</button>
       </div>
     );
   }

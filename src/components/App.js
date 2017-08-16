@@ -15,7 +15,9 @@ export default class App extends Component {
     this.addFish = this.addFish.bind(this);
     this.loadSamples = this.loadSamples.bind(this);
     this.addToOrder = this.addToOrder.bind(this);
+    this.removeFromOrder = this.removeFromOrder.bind(this);
     this.updateFish = this.updateFish.bind(this);
+    this.removeFish = this.removeFish.bind(this);
 
     this.state = {
       fishes: {},
@@ -71,15 +73,36 @@ export default class App extends Component {
     });
   }
 
+  removeFish(id) {
+    this.setState({
+      fishes: {
+        ...this.state.fishes,
+        [id]: null,
+      },
+    });
+  }
+
   loadSamples() {
     this.setState({
       fishes: sampleFishes,
     });
   }
 
-  addToOrder(key) {
+  addToOrder(id) {
     const order = { ...this.state.order };
-    order[key] = order[key] + 1 || 1;
+    order[id] = order[id] + 1 || 1;
+    this.setState({ order });
+  }
+
+  removeFromOrder(id) {
+    const order = { ...this.state.order };
+    order[id] = order[id] > 1 ? order[id] - 1 : null;
+
+    if (!order[id]) {
+      // Setting to null works for firebase, not firebase needs deleting
+      delete order[id];
+    }
+
     this.setState({ order });
   }
 
@@ -105,11 +128,13 @@ export default class App extends Component {
           fishes={this.state.fishes}
           order={this.state.order}
           params={this.props.params}
+          removeFromOrder={this.removeFromOrder}
         />
         <Inventory
           fishes={this.state.fishes}
           addFish={this.addFish}
           updateFish={this.updateFish}
+          removeFish={this.removeFish}
           loadSamples={this.loadSamples}
         />
       </div>

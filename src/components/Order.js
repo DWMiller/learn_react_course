@@ -12,10 +12,15 @@ export default class Order extends Component {
     const fish = this.props.fishes[id];
     const count = this.props.order[id];
 
+    const removeButton = (
+      <button onClick={() => this.props.removeFromOrder(id)}>&times;</button>
+    );
+
     if (!fish || fish.status === 'unavailable') {
       return (
         <li key={id}>
           Sorry, {fish ? fish.name : 'fish'} is no longer available
+          {removeButton}
         </li>
       );
     }
@@ -25,7 +30,7 @@ export default class Order extends Component {
     return (
       <li key={id}>
         <span>
-          {count}lbs {fish.name}
+          {count}lbs {fish.name} {removeButton}
         </span>
         <span className="price">
           {formatPrice(price)}
