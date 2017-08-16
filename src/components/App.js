@@ -6,6 +6,28 @@ import Inventory from './Inventory';
 import Order from './Order';
 
 export default class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.addFish = this.addFish.bind(this);
+
+    this.state = {
+      fishes: {},
+      order: {},
+    };
+  }
+
+  addFish(fish) {
+    const timestamp = Date.now();
+
+    this.setState({
+      fishes: {
+        ...this.state.fishes,
+        [`fish-${timestamp}`]: fish,
+      },
+    });
+  }
+
   render() {
     return (
       <div className="catch-of-the-day">
@@ -13,7 +35,7 @@ export default class App extends Component {
           <Header tagline="Fresh Seafood Market" />
         </div>
         <Order />
-        <Inventory />
+        <Inventory addFish={this.addFish} />
       </div>
     );
   }
