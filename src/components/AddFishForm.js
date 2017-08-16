@@ -2,12 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 export class AddFishForm extends Component {
-  constructor(props) {
-    super();
-    this.createFish = this.createFish.bind(this);
-  }
-
-  createFish(event) {
+  createFish = event => {
     event.preventDefault();
 
     this.props.addFish({
@@ -19,7 +14,7 @@ export class AddFishForm extends Component {
     });
 
     this.fishForm.reset();
-  }
+  };
 
   render() {
     return (

@@ -13,13 +13,6 @@ export default class App extends Component {
   constructor(props) {
     super(props);
 
-    this.addFish = this.addFish.bind(this);
-    this.loadSamples = this.loadSamples.bind(this);
-    this.addToOrder = this.addToOrder.bind(this);
-    this.removeFromOrder = this.removeFromOrder.bind(this);
-    this.updateFish = this.updateFish.bind(this);
-    this.removeFish = this.removeFish.bind(this);
-
     this.state = {
       fishes: {},
       order: {},
@@ -54,7 +47,7 @@ export default class App extends Component {
     );
   }
 
-  addFish(fish) {
+  addFish = fish => {
     const timestamp = Date.now();
 
     this.setState({
@@ -63,39 +56,39 @@ export default class App extends Component {
         [`fish-${timestamp}`]: fish,
       },
     });
-  }
+  };
 
-  updateFish(id, fish) {
+  updateFish = (id, fish) => {
     this.setState({
       fishes: {
         ...this.state.fishes,
         [id]: fish,
       },
     });
-  }
+  };
 
-  removeFish(id) {
+  removeFish = id => {
     this.setState({
       fishes: {
         ...this.state.fishes,
         [id]: null,
       },
     });
-  }
+  };
 
-  loadSamples() {
+  loadSamples = () => {
     this.setState({
       fishes: sampleFishes,
     });
-  }
+  };
 
-  addToOrder(id) {
+  addToOrder = id => {
     const order = { ...this.state.order };
     order[id] = order[id] + 1 || 1;
     this.setState({ order });
-  }
+  };
 
-  removeFromOrder(id) {
+  removeFromOrder = id => {
     const order = { ...this.state.order };
     order[id] = order[id] > 1 ? order[id] - 1 : null;
 
@@ -105,7 +98,7 @@ export default class App extends Component {
     }
 
     this.setState({ order });
-  }
+  };
 
   render() {
     return (

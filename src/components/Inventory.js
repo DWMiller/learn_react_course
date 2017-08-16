@@ -4,21 +4,15 @@ import PropTypes from 'prop-types';
 import AddFishForm from './AddFishForm';
 
 export default class Inventory extends Component {
-  constructor() {
-    super();
-    this.renderInventory = this.renderInventory.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  handleChange(event, id) {
+  handleChange = (event, id) => {
     const fish = this.props.fishes[id];
     this.props.updateFish(id, {
       ...fish,
       [event.target.name]: event.target.value,
     });
-  }
+  };
 
-  renderInventory(id) {
+  renderInventory = id => {
     const fish = this.props.fishes[id];
 
     return (
@@ -64,7 +58,7 @@ export default class Inventory extends Component {
         <button onClick={() => this.props.removeFish(id)}>Remove Fish</button>
       </div>
     );
-  }
+  };
 
   render() {
     return (

@@ -4,15 +4,10 @@ import PropTypes from 'prop-types';
 import { getFunName } from '../helpers';
 
 class StorePicker extends Component {
-  constructor() {
-    super();
-    this.goToStore = this.goToStore.bind(this);
-  }
-
-  goToStore(event) {
+  goToStore = event => {
     event.preventDefault();
     this.context.router.transitionTo(`/store/${this.storeInput.value}`);
-  }
+  };
 
   render() {
     return (
