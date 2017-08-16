@@ -15,6 +15,7 @@ export default class App extends Component {
     this.addFish = this.addFish.bind(this);
     this.loadSamples = this.loadSamples.bind(this);
     this.addToOrder = this.addToOrder.bind(this);
+    this.updateFish = this.updateFish.bind(this);
 
     this.state = {
       fishes: {},
@@ -61,6 +62,15 @@ export default class App extends Component {
     });
   }
 
+  updateFish(id, fish) {
+    this.setState({
+      fishes: {
+        ...this.state.fishes,
+        [id]: fish,
+      },
+    });
+  }
+
   loadSamples() {
     this.setState({
       fishes: sampleFishes,
@@ -96,7 +106,12 @@ export default class App extends Component {
           order={this.state.order}
           params={this.props.params}
         />
-        <Inventory addFish={this.addFish} loadSamples={this.loadSamples} />
+        <Inventory
+          fishes={this.state.fishes}
+          addFish={this.addFish}
+          updateFish={this.updateFish}
+          loadSamples={this.loadSamples}
+        />
       </div>
     );
   }
