@@ -12,8 +12,6 @@ export default class Order extends Component {
     const fish = this.props.fishes[id];
     const count = this.props.order[id];
 
-    const price = fish.price * count;
-
     if (!fish || fish.status === 'unavailable') {
       return (
         <li key={id}>
@@ -21,6 +19,8 @@ export default class Order extends Component {
         </li>
       );
     }
+
+    const price = fish.price * count;
 
     return (
       <li key={id}>
