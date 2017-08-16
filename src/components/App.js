@@ -6,6 +6,7 @@ import Header from './Header';
 // import Menu from './Menu';
 import Inventory from './Inventory';
 import Order from './Order';
+import Fish from './Fish';
 
 export default class App extends Component {
   constructor(props) {
@@ -42,6 +43,11 @@ export default class App extends Component {
       <div className="catch-of-the-day">
         <div className="menu">
           <Header tagline="Fresh Seafood Market" />
+          <ul className="list-of-fishes">
+            {Object.keys(this.state.fishes).map(key => {
+              return <Fish key={key} {...this.state.fishes[key]} />;
+            })}
+          </ul>
         </div>
         <Order />
         <Inventory addFish={this.addFish} loadSamples={this.loadSamples} />
