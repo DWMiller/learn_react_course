@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
 import sampleFishes from '../sample-fishes';
+import base from '../base';
 
 import Header from './Header';
-// import Menu from './Menu';
 import Inventory from './Inventory';
 import Order from './Order';
 import Fish from './Fish';
@@ -20,6 +20,17 @@ export default class App extends Component {
       fishes: {},
       order: {},
     };
+  }
+
+  componentWillMount() {
+    this.ref = base.syncState(`${this.props.params.storeId}/fishes`, {
+      context: this,
+      state: 'fishes',
+    });
+  }
+
+  componentWillUnmount() {
+    base.removeBinding(this.ref);
   }
 
   addFish(fish) {
