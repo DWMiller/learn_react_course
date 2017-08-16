@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import sampleFishes from '../sample-fishes';
 import base from '../base';
@@ -141,3 +142,7 @@ export default class App extends Component {
     );
   }
 }
+
+App.propTypes = {
+  params: PropTypes.object.isRequired,
+};
