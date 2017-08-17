@@ -35,10 +35,10 @@ export class AddFishForm extends Component {
       </form>
     );
   }
-}
 
-AddFishForm.propTypes = {
-  addFish: PropTypes.func.isRequired,
-};
+  static propTypes = {
+    addFish: PropTypes.func.isRequired,
+  };
+}
 
 export default AddFishForm;

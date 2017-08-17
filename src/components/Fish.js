@@ -31,16 +31,16 @@ export class Fish extends Component {
       </li>
     );
   }
-}
 
-Fish.propTypes = {
-  addToOrder: PropTypes.func.isRequired,
-  name: PropTypes.string.isRequired,
-  price: PropTypes.number.isRequired,
-  desc: PropTypes.string.isRequired,
-  image: PropTypes.string.isRequired,
-  status: PropTypes.string.isRequired,
-  index: PropTypes.string.isRequired,
-};
+  static propTypes = {
+    addToOrder: PropTypes.func.isRequired,
+    name: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    desc: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
+    index: PropTypes.string.isRequired,
+  };
+}
 
 export default Fish;

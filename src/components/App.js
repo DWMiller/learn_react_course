@@ -10,14 +10,10 @@ import Order from './Order';
 import Fish from './Fish';
 
 export default class App extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      fishes: {},
-      order: {},
-    };
-  }
+  state = {
+    fishes: {},
+    order: {},
+  };
 
   componentWillMount() {
     this.ref = base.syncState(`${this.props.params.storeId}/fishes`, {
@@ -135,8 +131,8 @@ export default class App extends Component {
       </div>
     );
   }
-}
 
-App.propTypes = {
-  params: PropTypes.object.isRequired,
-};
+  static propTypes = {
+    params: PropTypes.object.isRequired,
+  };
+}

@@ -83,10 +83,10 @@ export default class Order extends Component {
       </div>
     );
   }
-}
 
-Order.propTypes = {
-  fishes: PropTypes.object.isRequired,
-  order: PropTypes.object.isRequired,
-  removeFromOrder: PropTypes.func.isRequired,
-};
+  static propTypes = {
+    fishes: PropTypes.object.isRequired,
+    order: PropTypes.object.isRequired,
+    removeFromOrder: PropTypes.func.isRequired,
+  };
+}

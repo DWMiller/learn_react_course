@@ -167,13 +167,13 @@ export default class Inventory extends Component {
       </div>
     );
   }
-}
 
-Inventory.propTypes = {
-  fishes: PropTypes.object.isRequired,
-  addFish: PropTypes.func.isRequired,
-  loadSamples: PropTypes.func.isRequired,
-  updateFish: PropTypes.func.isRequired,
-  removeFish: PropTypes.func.isRequired,
-  storeId: PropTypes.string.isRequired,
-};
+  static propTypes = {
+    fishes: PropTypes.object.isRequired,
+    addFish: PropTypes.func.isRequired,
+    loadSamples: PropTypes.func.isRequired,
+    updateFish: PropTypes.func.isRequired,
+    removeFish: PropTypes.func.isRequired,
+    storeId: PropTypes.string.isRequired,
+  };
+}
