@@ -130,6 +130,7 @@ export default class App extends Component {
           updateFish={this.updateFish}
           removeFish={this.removeFish}
           loadSamples={this.loadSamples}
+          storeId={this.props.params.storeId}
         />
       </div>
     );
