@@ -10,64 +10,64 @@ import Order from './Order';
 import Fish from './Fish';
 
 export default class App extends Component {
+  static propTypes = {
+    match: PropTypes.object.isRequired,
+  };
+
   state = {
     fishes: {},
     order: {},
   };
 
-  componentWillMount() {
-    this.ref = base.syncState(`${this.props.params.storeId}/fishes`, {
-      context: this,
-      state: 'fishes',
-    });
-
+  componentDidMount() {
     const localStorageRef = localStorage.getItem(
-      `order-${this.props.params.storeId}`
+      this.props.match.params.storeId
     );
 
     if (localStorageRef) {
-      this.setState({
-        order: JSON.parse(localStorageRef),
-      });
+      this.setState({ order: JSON.parse(localStorageRef) });
     }
+
+    this.ref = base.syncState(`${this.props.match.params.storeId}/fishes`, {
+      context: this,
+      state: 'fishes',
+    });
+  }
+
+  componentDidUpdate() {
+    localStorage.setItem(
+      this.props.match.params.storeId,
+      JSON.stringify(this.state.order)
+    );
   }
 
   componentWillUnmount() {
     base.removeBinding(this.ref);
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    localStorage.setItem(
-      `order-${this.props.params.storeId}`,
-      JSON.stringify(nextState.order)
-    );
-  }
-
   addFish = fish => {
-    const timestamp = Date.now();
-
     this.setState({
       fishes: {
         ...this.state.fishes,
-        [`fish-${timestamp}`]: fish,
+        [`fish-${Date.now()}`]: fish,
       },
     });
   };
 
-  updateFish = (id, fish) => {
+  updateFish = (key, fish) => {
     this.setState({
       fishes: {
         ...this.state.fishes,
-        [id]: fish,
+        [key]: fish,
       },
     });
   };
 
-  removeFish = id => {
+  removeFish = key => {
     this.setState({
       fishes: {
         ...this.state.fishes,
-        [id]: null,
+        [key]: null,
       },
     });
   };
@@ -78,19 +78,20 @@ export default class App extends Component {
     });
   };
 
-  addToOrder = id => {
+  addToOrder = key => {
+    console.log(key);
     const order = { ...this.state.order };
-    order[id] = order[id] + 1 || 1;
+    order[key] = order[key] + 1 || 1;
     this.setState({ order });
   };
 
-  removeFromOrder = id => {
+  removeFromOrder = key => {
     const order = { ...this.state.order };
-    order[id] = order[id] > 1 ? order[id] - 1 : null;
+    order[key] = order[key] > 1 ? order[key] - 1 : null;
 
-    if (!order[id]) {
+    if (!order[key]) {
       // Setting to null works for firebase, not firebase needs deleting
-      delete order[id];
+      delete order[key];
     }
 
     this.setState({ order });
@@ -105,10 +106,10 @@ export default class App extends Component {
             {Object.keys(this.state.fishes).map(key => {
               return (
                 <Fish
-                  addToOrder={this.addToOrder}
                   key={key}
                   index={key}
-                  {...this.state.fishes[key]}
+                  details={this.state.fishes[key]}
+                  addToOrder={this.addToOrder}
                 />
               );
             })}
@@ -117,7 +118,7 @@ export default class App extends Component {
         <Order
           fishes={this.state.fishes}
           order={this.state.order}
-          params={this.props.params}
+          params={this.props.match.params}
           removeFromOrder={this.removeFromOrder}
         />
         <Inventory
@@ -126,13 +127,9 @@ export default class App extends Component {
           updateFish={this.updateFish}
           removeFish={this.removeFish}
           loadSamples={this.loadSamples}
-          storeId={this.props.params.storeId}
+          storeId={this.props.match.params.storeId}
         />
       </div>
     );
   }
-
-  static propTypes = {
-    params: PropTypes.object.isRequired,
-  };
 }

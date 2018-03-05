@@ -4,9 +4,11 @@ import PropTypes from 'prop-types';
 import { getFunName } from '../helpers';
 
 class StorePicker extends Component {
+  myInput = React.createRef();
+
   goToStore = event => {
     event.preventDefault();
-    this.context.router.transitionTo(`/store/${this.storeInput.value}`);
+    this.props.history.push(`/store/${this.myInput.value.value}`);
   };
 
   render() {
@@ -18,9 +20,7 @@ class StorePicker extends Component {
           required
           placeholder="Store Name"
           defaultValue={getFunName()}
-          ref={input => {
-            this.storeInput = input;
-          }}
+          ref={this.myInput}
         />
         <button type="submit">Visit Store</button>
       </form>

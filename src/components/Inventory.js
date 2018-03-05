@@ -1,11 +1,23 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import firebase from 'firebase';
 
-import base from '../base';
+import base, { firebaseApp } from '../base';
 
 import AddFishForm from './AddFishForm';
+import EditFishForm from './EditFishForm';
+import Login from './Login';
 
 export default class Inventory extends Component {
+  static propTypes = {
+    fishes: PropTypes.object.isRequired,
+    addFish: PropTypes.func.isRequired,
+    loadSamples: PropTypes.func.isRequired,
+    updateFish: PropTypes.func.isRequired,
+    removeFish: PropTypes.func.isRequired,
+    storeId: PropTypes.string.isRequired,
+  };
+
   constructor() {
     super();
     this.state = {
@@ -15,125 +27,51 @@ export default class Inventory extends Component {
   }
 
   componentDidMount() {
-    base.onAuth(user => {
+    firebase.auth().onAuthStateChanged(user => {
       if (user) {
-        this.authHandler(null, { user });
+        this.authHandler({ user });
       }
     });
   }
 
-  handleChange = (event, id) => {
-    const fish = this.props.fishes[id];
-    this.props.updateFish(id, {
-      ...fish,
-      [event.target.name]: event.target.value,
-    });
+  authenticate = provider => {
+    const authProvider = new firebase.auth[`${provider}AuthProvider`]();
+    firebaseApp
+      .auth()
+      .signInWithPopup(authProvider)
+      .then(this.authHandler);
   };
 
-  authenticate = providor => {
-    base.authWithOAuthPopup(providor, this.authHandler);
-  };
+  authHandler = async authData => {
+    const store = await base.fetch(this.props.storeId, { context: this });
 
-  logout = () => {
-    base.unauth();
-    this.setState({
-      uid: null,
-    });
-  };
-
-  authHandler = (err, authData) => {
-    if (err) {
-      console.log(err);
-      return;
+    if (!store.owner) {
+      await base.post(`${this.props.storeId}/owner`, {
+        data: authData.user.uid,
+      });
     }
 
-    const storeRef = base.database().ref(this.props.storeId);
-
-    storeRef.once('value', snapshot => {
-      const data = snapshot.val() || {};
-
-      if (!data.owner) {
-        storeRef.set({
-          owner: authData.user.uid,
-        });
-      }
-
-      this.setState({
-        uid: authData.user.uid,
-        owner: data.owner || authData.user.uid,
-      });
+    this.setState({
+      uid: authData.user.uid,
+      owner: store.owner || authData.user.uid,
     });
   };
 
-  renderLogin = () => {
-    return (
-      <nav className="login">
-        <h2>Inventory</h2>
-        <p>Sign in to manage your store's inventory</p>
-        <button className="github" onClick={() => this.authenticate('github')}>
-          Log In With Github
-        </button>
-        <button
-          className="facebook"
-          onClick={() => this.authenticate('facebook')}
-        >
-          Log In With Facebook
-        </button>
-        <button
-          className="twitter"
-          onClick={() => this.authenticate('twitter')}
-        >
-          Log In With Twitter
-        </button>
-      </nav>
-    );
+  logout = async () => {
+    await firebase.auth().signOut();
+    this.setState({ uid: null });
   };
 
-  renderInventory = id => {
-    const fish = this.props.fishes[id];
-
+  renderInventory = key => {
+    const fish = this.props.fishes[key];
     return (
-      <div className="fish-edit" key={id}>
-        <input
-          type="text"
-          name="name"
-          value={fish.name}
-          placeholder="Fish Name"
-          onChange={e => this.handleChange(e, id)}
-        />
-        <input
-          type="text"
-          name="price"
-          value={fish.price}
-          placeholder="Fish Price"
-          onChange={e => this.handleChange(e, id)}
-        />
-        <select
-          type="text"
-          name="status"
-          value={fish.status}
-          placeholder="Fish Status"
-          onChange={e => this.handleChange(e, id)}
-        >
-          <option value="available">Fresh!</option>
-          <option value="unavailable">Sold Out!</option>
-        </select>
-        <textarea
-          type="text"
-          name="desc"
-          value={fish.desc}
-          placeholder="Fish Desc"
-          onChange={e => this.handleChange(e, id)}
-        />
-        <input
-          type="text"
-          name="image"
-          value={fish.image}
-          placeholder="Fish Image"
-          onChange={e => this.handleChange(e, id)}
-        />
-        <button onClick={() => this.props.removeFish(id)}>Remove Fish</button>
-      </div>
+      <EditFishForm
+        key={key}
+        index={key}
+        fish={fish}
+        updateFish={this.props.updateFish}
+        removeFish={this.props.removeFish}
+      />
     );
   };
 
@@ -141,11 +79,7 @@ export default class Inventory extends Component {
     const logout = <button onClick={this.logout}>Log Out!</button>;
 
     if (!this.state.uid) {
-      return (
-        <div>
-          {this.renderLogin()}
-        </div>
-      );
+      return <Login authenticate={this.authenticate} />;
     }
 
     if (this.state.uid !== this.state.owner) {
@@ -167,13 +101,4 @@ export default class Inventory extends Component {
       </div>
     );
   }
-
-  static propTypes = {
-    fishes: PropTypes.object.isRequired,
-    addFish: PropTypes.func.isRequired,
-    loadSamples: PropTypes.func.isRequired,
-    updateFish: PropTypes.func.isRequired,
-    removeFish: PropTypes.func.isRequired,
-    storeId: PropTypes.string.isRequired,
-  };
 }
